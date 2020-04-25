@@ -1,2 +1,3 @@
 rootProject.name='CCTedV'
 include ':app'
+include ':libstreaming'
