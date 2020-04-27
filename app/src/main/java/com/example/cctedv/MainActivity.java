@@ -34,23 +34,24 @@ import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends Activity implements RtspClient.Callback,
+        Session.Callback, SurfaceHolder.Callback{
 
-//    public final static String TAG = MainActivity.class.getSimpleName();
+    public final static String TAG = MainActivity.class.getSimpleName();
 
-//    // surfaceview
-//    private static net.majorkernelpanic.streaming.gl.SurfaceView mSurfaceView;
-//
-//    // Rtsp session
-//    private Session mSession;
-//    private static RtspClient mClient;
+    // surfaceview
+    private static net.majorkernelpanic.streaming.gl.SurfaceView mSurfaceView;
+
+    // Rtsp session
+    private Session mSession;
+    private static RtspClient mClient;
 
     private static final int CAMERA_PERMISSION = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+//        setContentView(R.layout.activity_main);
 
         int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
         if(permissionCheck != PackageManager.PERMISSION_GRANTED) {
@@ -64,26 +65,27 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, RecordActivity.class);
-                startActivity(intent);
-            }
-        });
-//        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-//        // getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-//        requestWindowFeature(Window.FEATURE_NO_TITLE);
-//
-//        setContentView(R.layout.activity_main);
-//
-//        mSurfaceView = (SurfaceView) findViewById(R.id.surface);
-//
-//        mSurfaceView.getHolder().addCallback(this);
-//
-//        // Initialize RTSP client
-//        initRtspClient();
+//        FloatingActionButton fab = findViewById(R.id.fab);
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent intent = new Intent(MainActivity.this, RecordActivity.class);
+//                startActivity(intent);
+//            }
+//        });
+
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        // getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+        setContentView(R.layout.activity_main);
+
+        mSurfaceView = (SurfaceView) findViewById(R.id.surface);
+
+        mSurfaceView.getHolder().addCallback(this);
+
+        // Initialize RTSP client
+        initRtspClient();
 
     }
 
@@ -101,159 +103,159 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-//    @Override
-//    protected void onResume() {
-//        super.onResume();
-//
-//        toggleStreaming();
-//    }
-//
-//    @Override
-//    protected void onPause(){
-//        super.onPause();
-//
-//        toggleStreaming();
-//    }
-//
-//    private void initRtspClient() {
-//        // Configures the SessionBuilder
-//
-//        mSession = SessionBuilder.getInstance()
-//                .setContext(getApplicationContext())
-//                .setAudioEncoder(SessionBuilder.AUDIO_NONE)
-//                .setAudioQuality(new AudioQuality(8000, 16000))
-//                .setVideoEncoder(SessionBuilder.VIDEO_H264)
-//                .setSurfaceView(mSurfaceView).setPreviewOrientation(0)
-//                .setCallback(this).build();
-//
-//        // Configures the RTSP client
-//        mClient = new RtspClient();
-//        mClient.setSession(mSession);
-//        mClient.setCallback(this);
-//        mSurfaceView.setAspectRatioMode(SurfaceView.ASPECT_RATIO_PREVIEW);
-//        String ip, port, path;
-//
-//        // We parse the URI written in the Editext
-////        Pattern uri = Pattern.compile("rtsp://(.+):(\\d+)/(.+)");
-////        Matcher m = uri.matcher(AppConfig.STREAM_URL);
-////        m.find();
-//        ip = "1.201.142.81";
-//        port = "5005";
-//        path = "";
-//
-//        mClient.setCredentials(AppConfig.PUBLISHER_USERNAME,
-//                AppConfig.PUBLISHER_PASSWORD);
-//        mClient.setServerAddress(ip, Integer.parseInt(port));
-//        mClient.setStreamPath("/" + path);
-//    }
-//
-//    private void toggleStreaming() {
-//        if (!mClient.isStreaming()) {
-//            // Start camera preview
-//            mSession.startPreview();
-//
-//            // Start video stream
-//            mClient.startStream();
-//        } else {
-//            // already streaming, stop streaming
-//            // stop camera preview
-//            mSession.stopPreview();
-//
-//            // stop streaming
-//            mClient.stopStream();
-//        }
-//    }
-//
-//    @Override
-//    public void onDestroy() {
-//        super.onDestroy();
-//        mClient.release();
-//        mSession.release();
-//        mSurfaceView.getHolder().removeCallback(this);
-//    }
-//
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-////        getMenuInflater().inflate(R.menu.main, menu);
-//        return true;
-//    }
-//
-//    @Override
-//    public void onBitrateUpdate(long bitrate) {
-//
-//    }
-//
-//    @Override
-//    public void onSessionError(int reason, int streamType, Exception e) {
-//        switch (reason) {
-//            case Session.ERROR_CAMERA_ALREADY_IN_USE:
-//                break;
-//            case Session.ERROR_CAMERA_HAS_NO_FLASH:
-//                break;
-//            case Session.ERROR_INVALID_SURFACE:
-//                break;
-//            case Session.ERROR_STORAGE_NOT_READY:
-//                break;
-//            case Session.ERROR_CONFIGURATION_NOT_SUPPORTED:
-//                break;
-//            case Session.ERROR_OTHER:
-//                break;
-//        }
-//
-//        if (e != null) {
-//            alertError(e.getMessage());
-//            e.printStackTrace();
-//        }
-//    }
-//
-//    private void alertError(final String msg) {
-//        final String error = (msg == null) ? "Unknown error: " : msg;
-//        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-//        builder.setMessage(error).setPositiveButton("Ok",
-//                new DialogInterface.OnClickListener() {
-//                    public void onClick(DialogInterface dialog, int id) {
-//                    }
-//                });
-//        AlertDialog dialog = builder.create();
-//        dialog.show();
-//    }
-//
-//    @Override
-//    public void onRtspUpdate(int message, Exception exception) {
-//        switch (message) {
-//            case RtspClient.ERROR_CONNECTION_FAILED:
-//            case RtspClient.ERROR_WRONG_CREDENTIALS:
-//                alertError(exception.getMessage());
-//                exception.printStackTrace();
-//                break;
-//        }
-//    }
-//
-//    @Override
-//    public void onPreviewStarted() {
-//    }
-//
-//    @Override
-//    public void onSessionConfigured() {
-//    }
-//
-//    @Override
-//    public void onSessionStarted() {
-//    }
-//
-//    @Override
-//    public void onSessionStopped() {
-//    }
-//
-//    @Override
-//    public void surfaceChanged(SurfaceHolder arg0, int arg1, int arg2, int arg3) {
-//    }
-//
-//    @Override
-//    public void surfaceCreated(SurfaceHolder holder) {
-//    }
-//
-//    @Override
-//    public void surfaceDestroyed(SurfaceHolder holder) {
-//    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        toggleStreaming();
+    }
+
+    @Override
+    protected void onPause(){
+        super.onPause();
+
+        toggleStreaming();
+    }
+
+    private void initRtspClient() {
+        // Configures the SessionBuilder
+
+        mSession = SessionBuilder.getInstance()
+                .setContext(getApplicationContext())
+                .setAudioEncoder(SessionBuilder.AUDIO_NONE)
+                .setAudioQuality(new AudioQuality(8000, 16000))
+                .setVideoEncoder(SessionBuilder.VIDEO_H264)
+                .setSurfaceView(mSurfaceView).setPreviewOrientation(0)
+                .setCallback(this).build();
+
+        // Configures the RTSP client
+        mClient = new RtspClient();
+        mClient.setSession(mSession);
+        mClient.setCallback(this);
+        mSurfaceView.setAspectRatioMode(SurfaceView.ASPECT_RATIO_PREVIEW);
+        String ip, port, path;
+
+        // We parse the URI written in the Editext
+//        Pattern uri = Pattern.compile("rtsp://(.+):(\\d+)/(.+)");
+//        Matcher m = uri.matcher(AppConfig.STREAM_URL);
+//        m.find();
+        ip = "1.201.142.81";
+        port = "5005";
+        path = "";
+
+        mClient.setCredentials(AppConfig.PUBLISHER_USERNAME,
+                AppConfig.PUBLISHER_PASSWORD);
+        mClient.setServerAddress(ip, Integer.parseInt(port));
+        mClient.setStreamPath("/" + path);
+    }
+
+    private void toggleStreaming() {
+        if (!mClient.isStreaming()) {
+            // Start camera preview
+            mSession.startPreview();
+
+            // Start video stream
+            mClient.startStream();
+        } else {
+            // already streaming, stop streaming
+            // stop camera preview
+            mSession.stopPreview();
+
+            // stop streaming
+            mClient.stopStream();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mClient.release();
+        mSession.release();
+        mSurfaceView.getHolder().removeCallback(this);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public void onBitrateUpdate(long bitrate) {
+
+    }
+
+    @Override
+    public void onSessionError(int reason, int streamType, Exception e) {
+        switch (reason) {
+            case Session.ERROR_CAMERA_ALREADY_IN_USE:
+                break;
+            case Session.ERROR_CAMERA_HAS_NO_FLASH:
+                break;
+            case Session.ERROR_INVALID_SURFACE:
+                break;
+            case Session.ERROR_STORAGE_NOT_READY:
+                break;
+            case Session.ERROR_CONFIGURATION_NOT_SUPPORTED:
+                break;
+            case Session.ERROR_OTHER:
+                break;
+        }
+
+        if (e != null) {
+            alertError(e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    private void alertError(final String msg) {
+        final String error = (msg == null) ? "Unknown error: " : msg;
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setMessage(error).setPositiveButton("Ok",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                    }
+                });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    @Override
+    public void onRtspUpdate(int message, Exception exception) {
+        switch (message) {
+            case RtspClient.ERROR_CONNECTION_FAILED:
+            case RtspClient.ERROR_WRONG_CREDENTIALS:
+                alertError(exception.getMessage());
+                exception.printStackTrace();
+                break;
+        }
+    }
+
+    @Override
+    public void onPreviewStarted() {
+    }
+
+    @Override
+    public void onSessionConfigured() {
+    }
+
+    @Override
+    public void onSessionStarted() {
+    }
+
+    @Override
+    public void onSessionStopped() {
+    }
+
+    @Override
+    public void surfaceChanged(SurfaceHolder arg0, int arg1, int arg2, int arg3) {
+    }
+
+    @Override
+    public void surfaceCreated(SurfaceHolder holder) {
+    }
+
+    @Override
+    public void surfaceDestroyed(SurfaceHolder holder) {
+    }
 }

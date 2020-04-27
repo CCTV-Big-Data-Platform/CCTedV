@@ -38,7 +38,7 @@ public class RecordActivity extends Activity implements RtspClient.Callback,
         // getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-        setContentView(R.layout.activity_main);
+//        setContentView(R.layout.activity_record);
 
         mSurfaceView = (SurfaceView) findViewById(R.id.surface);
 
@@ -47,6 +47,8 @@ public class RecordActivity extends Activity implements RtspClient.Callback,
 
         // Initialize RTSP client
         initRtspClient();
+
+
     }
 
     @Override
