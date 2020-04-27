@@ -13,4 +13,5 @@
 .externalNativeBuild
 .cxx
 AppConfig.java
-libstreaming/build
+libstreaming/build/*
+libstreaming/build/
