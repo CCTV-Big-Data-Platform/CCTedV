@@ -33,17 +33,15 @@ public class RecordActivity extends Activity implements RtspClient.Callback,
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_record);
+        setContentView(R.layout.activity_record);
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         mSurfaceView = (SurfaceView) findViewById(R.id.surface);
         mSurfaceView.getHolder().addCallback(this);
-
-        setContentView(R.layout.activity_record);
 
         // Initialize RTSP client
         initRtspClient();
@@ -93,37 +91,6 @@ public class RecordActivity extends Activity implements RtspClient.Callback,
         mClient.setServerAddress(ip, Integer.parseInt(port));
         mClient.setStreamPath("/" + path);
     }
-
-//    private void initRtspClient() {
-//        // Configures the SessionBuilder
-//        mSession = SessionBuilder.getInstance()
-//                .setContext(getApplicationContext())
-//                .setAudioEncoder(SessionBuilder.AUDIO_NONE)
-//                .setAudioQuality(new AudioQuality(8000, 16000))
-//                .setVideoEncoder(SessionBuilder.VIDEO_H264)
-//                .setSurfaceView(mSurfaceView).setPreviewOrientation(0)
-//                .setCallback(this).build();
-//
-//        // Configures the RTSP client
-//        mClient = new RtspClient();
-//        mClient.setSession(mSession);
-//        mClient.setCallback(this);
-//        mSurfaceView.setAspectRatioMode(SurfaceView.ASPECT_RATIO_PREVIEW);
-//        String ip, port, path;
-//
-//        // We parse the URI written in the Editext
-//        Pattern uri = Pattern.compile("rtsp://(.+):(\\d+)/(.+)");
-//        Matcher m = uri.matcher(AppConfig.STREAM_URL);
-//        m.find();
-//        ip = m.group(1);
-//        port = m.group(2);
-//        path = m.group(3);
-//
-//        mClient.setCredentials(AppConfig.PUBLISHER_USERNAME,
-//                AppConfig.PUBLISHER_PASSWORD);
-//        mClient.setServerAddress(ip, Integer.parseInt(port));
-//        mClient.setStreamPath("/" + path);
-//    }
 
     private void toggleStreaming() {
         if (!mClient.isStreaming()) {
