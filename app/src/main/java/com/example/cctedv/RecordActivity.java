@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.SurfaceHolder;
 import android.view.Window;
@@ -26,35 +27,29 @@ public class RecordActivity extends Activity implements RtspClient.Callback,
     // surfaceview
     private static net.majorkernelpanic.streaming.gl.SurfaceView mSurfaceView;
 
-    // Rtsp session
+    // RTSP session
     private Session mSession;
     private static RtspClient mClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_record);
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        // getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-
-//        setContentView(R.layout.activity_record);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         mSurfaceView = (SurfaceView) findViewById(R.id.surface);
-
         mSurfaceView.getHolder().addCallback(this);
-        setContentView(R.layout.activity_record);
 
         // Initialize RTSP client
         initRtspClient();
-
-
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
         toggleStreaming();
     }
 
