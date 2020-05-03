@@ -18,6 +18,10 @@ import net.majorkernelpanic.streaming.SessionBuilder;
 import net.majorkernelpanic.streaming.audio.AudioQuality;
 import net.majorkernelpanic.streaming.gl.SurfaceView;
 import net.majorkernelpanic.streaming.rtsp.RtspClient;
+import net.majorkernelpanic.streaming.video.VideoQuality;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -65,9 +69,10 @@ public class RecordActivity extends Activity implements RtspClient.Callback,
 
         mSession = SessionBuilder.getInstance()
                 .setContext(getApplicationContext())
-                .setAudioEncoder(SessionBuilder.AUDIO_NONE)
-                .setAudioQuality(new AudioQuality(8000, 16000))
+                .setAudioEncoder(SessionBuilder.AUDIO_AAC)
+                .setAudioQuality(new AudioQuality(16000, 32000))
                 .setVideoEncoder(SessionBuilder.VIDEO_H264)
+                .setVideoQuality(new VideoQuality(320,240,20,500000))
                 .setSurfaceView(mSurfaceView).setPreviewOrientation(0)
                 .setCallback(this).build();
 
@@ -79,11 +84,12 @@ public class RecordActivity extends Activity implements RtspClient.Callback,
         String ip, port, path;
 
         // We parse the URI written in the Editext
-//        Pattern uri = Pattern.compile("rtsp://(.+):(\\d+)/(.+)");
-//        Matcher m = uri.matcher(AppConfig.STREAM_URL);
-//        m.find();
-        ip = "1.201.142.81";
-        port = "5005";
+        Pattern uri = Pattern.compile("rtsp://(.+):(\\d+)/(.+)");
+        Matcher m = uri.matcher(AppConfig.STREAM_URL);
+        m.find();
+
+        ip = "1.201.143.22";
+        port = "5900";
         path = "";
 
         mClient.setCredentials(AppConfig.PUBLISHER_USERNAME,
@@ -99,6 +105,9 @@ public class RecordActivity extends Activity implements RtspClient.Callback,
 
             // Start video stream
             mClient.startStream();
+            Log.i("Toggle STreamgin",  mSession.getTrack(0).toString());
+            Log.i("Toggle STreamgin",  mSession.getTrack(1).toString());
+
         } else {
             // already streaming, stop streaming
             // stop camera preview
