@@ -130,7 +130,7 @@ public class H264Packetizer extends AbstractPacketizer implements Runnable {
 		} catch (InterruptedException e) {}
 
 		Log.d(TAG,"H264 packetizer stopped !");
-
+		
 	}
 
 	/**

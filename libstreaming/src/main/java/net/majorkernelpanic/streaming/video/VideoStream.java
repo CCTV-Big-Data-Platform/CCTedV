@@ -144,6 +144,8 @@ public abstract class VideoStream extends MediaStream {
 		return mCameraId;
 	}
 
+	public Camera getCameraObject() {return mCamera;}
+
 	/**
 	 * Sets a Surface to show a preview of recorded media (video). 
 	 * You can call this method at any time and changes will take effect next time you call {@link #start()}.
@@ -457,6 +459,7 @@ public abstract class VideoStream extends MediaStream {
 			ByteBuffer[] inputBuffers = mMediaCodec.getInputBuffers();
 			@Override
 			public void onPreviewFrame(byte[] data, Camera camera) {
+
 				oldnow = now;
 				now = System.nanoTime()/1000;
 				if (i++>3) {
