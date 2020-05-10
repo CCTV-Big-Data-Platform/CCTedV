@@ -1,8 +1,10 @@
 package com.example.cctedv;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -10,11 +12,9 @@ import android.view.Gravity;
 import android.view.TextureView;
 import android.widget.FrameLayout;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -34,8 +34,10 @@ public class RecordActivity extends Activity implements TextureView.SurfaceTextu
     private File mFiles;
     private boolean isCameraOpen = false;
 
-    private int mUnitTime = 1000;
+    private int mUnitTime = 1500;
     private int mRemainingFileSize;
+//    private byte[] frame = new Byte[];
+//    private MediaRecorder mediaRecorder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +56,7 @@ public class RecordActivity extends Activity implements TextureView.SurfaceTextu
         mDateFormat.setTimeZone(mTimeZone);
         mDate = mDateFormat.format(new Date());
         mOutputFile = Environment.getExternalStorageDirectory().getAbsolutePath() + "/CCTedV" + "/" + mUserName + "_" + mDate;
-        Log.i("PATH", mOutputFile);
+        Log.i("PATH :: ", mOutputFile);
         mFiles = new File(mOutputFile);
 
         mRemainingFileSize = calculateGap(mDate)*44100*2;
@@ -80,11 +82,20 @@ public class RecordActivity extends Activity implements TextureView.SurfaceTextu
 
     @Override
     public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
+        Log.i("hello", "aaa");
         makeDir();
         settingVideoInfo();
 
         isCameraOpen = true;
         mCamera = Camera.open();
+
+//        mediaRecorder = new MediaRecorder();
+////        mCamera.unlock();
+//        mediaRecorder.setCamera(mCamera);
+//        mediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
+//        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
+//        mediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.MPEG_4_SP);
+//        mediaRecorder.setOrientationHint(90);
 
         Camera.Size previewSize = mCamera.getParameters().getPreviewSize();
         mTextureView.setLayoutParams(new FrameLayout.LayoutParams(
@@ -96,6 +107,18 @@ public class RecordActivity extends Activity implements TextureView.SurfaceTextu
         }
 
         mCamera.startPreview();
+//        mediaRecorder.setOutputFile(mOutputFile+".mpeg");
+//        try {
+//            Surface mySurface = MediaCodec.createPersistentInputSurface();
+//            mediaRecorder.setPreviewDisplay(mySurface);
+//
+//            mediaRecorder.prepare();
+//            mediaRecorder.start();
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+
         mCamera.setPreviewCallback(new Camera.PreviewCallback() {
 
             public void onPreviewFrame(final byte[] data, final Camera camera) {
@@ -103,14 +126,33 @@ public class RecordActivity extends Activity implements TextureView.SurfaceTextu
                     if(!accumulateFile(data)) {
                         if (mFiles.exists()) {
                             try {
+                                //파일 저장
                                 mFileOutputStream.close();
+                                mFileOutputStream.flush();
                                 mFileOutputStream = null;
-                                Log.i("MAKE : ", "file");
+                                // URL 설정.
+                                String url = "http://victoria.khunet.net:5900/upload";
+
+                                // AsyncTask를 통해 HttpURLConnection 수행.
+                                (new NetworkTask(url, null, mFiles)).execute();
+
+//                                networkTask.execute();
+
+//                                mediaRecorder.stop();
+//                                mediaRecorder.release();
+//                                Log.i("MAKE : ", "file");
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
 
+                            //다시 시작
                             settingVideoInfo();
+//                            try {
+//                                mediaRecorder.prepare();
+//                                mediaRecorder.start();
+//                            } catch (IOException e) {
+//                                e.printStackTrace();
+//                            }
                         }
                     }
                 }
@@ -138,12 +180,12 @@ public class RecordActivity extends Activity implements TextureView.SurfaceTextu
         return true;
     }
 
-
     private boolean accumulateFile(byte[] byteBuffer) {
         try {
             if(mRemainingFileSize >0) {
                 if(byteBuffer != null) {
                     mFileOutputStream.write(byteBuffer);
+
                     mRemainingFileSize -= byteBuffer.length * 2;
                     return true;
                 } else {
