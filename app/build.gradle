@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.cctedv"
-        minSdkVersion 25
+        minSdkVersion 22
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -21,6 +21,18 @@ android {
         }
     }
 
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/ASL2.0'
+        exclude("META-INF/*.kotlin_module")
+    }
+
 }
 
 dependencies {
@@ -33,4 +45,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation project(path: ':libstreaming')
     implementation 'com.google.android.material:material:1.0.0'
+    implementation("com.squareup.okhttp3:okhttp:4.6.0")
+    compile 'com.squareup.mimecraft:mimecraft:1.1.1'
+
 }
