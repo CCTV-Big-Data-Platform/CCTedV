@@ -11,9 +11,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
@@ -27,6 +27,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         grantPermissions();
+        Button   mButton;
+        final EditText mEdit;
 
         Button fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -37,6 +39,18 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        mEdit   = (EditText)findViewById(R.id.userId);
+        mButton = (Button)findViewById(R.id.enroll_user);
+        mButton.setOnClickListener(
+            new View.OnClickListener()
+            {
+                public void onClick(View view)
+                {
+                    Singleton.getInstance().setUserId(mEdit.getText().toString());
+                    Log.v("UserId", Singleton.getInstance().getUserId());
+                }
+            });
 
     }
 
