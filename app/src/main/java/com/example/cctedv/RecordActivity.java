@@ -128,8 +128,11 @@ public class RecordActivity extends Activity implements TextureView.SurfaceTextu
                                 fos.flush();
                                 fos.close();
 
+                                String byteData = new String(currentData);
+                                Log.i("this : ", byteData);
+
                                 // AsyncTask를 통해 HttpURLConnection 수행.
-                                (new NetworkTask(url, currentData.toString(), mFiles, mDate)).execute();
+                                (new NetworkTask(url, byteData, mFiles, mDate)).execute();
 
                             } catch (IOException e) {
                                 e.printStackTrace();
