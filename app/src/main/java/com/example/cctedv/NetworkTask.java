@@ -19,10 +19,13 @@ public class NetworkTask extends AsyncTask<Void, Void, String> {
 
     private String url;
     private String data;
-    private File mFiles;
-    private String mDate;
+    private File mFiles = null;
+    private String mDate = null;
 
-
+    public NetworkTask(String url, String data) {
+        this.url = url;
+        this.data = data;
+    }
     public NetworkTask(String url, String data, File mFiles, String mDate) {
         this.url = url;
         this.data = data;
@@ -32,31 +35,42 @@ public class NetworkTask extends AsyncTask<Void, Void, String> {
 
     @Override
     protected String doInBackground(Void... params) {
-        String result; // 요청 결과를 저장할 변수.
-        // file 전송시
-//        RequestBody requestBody = new MultipartBody.Builder().setType(MultipartBody.FORM)
-////                .addFormDataPart("file", mFiles.getName(),
-////                        RequestBody.create(MediaType.parse("text/plain"), mFiles))
-////                .addFormDataPart("userName", "victoria")
-////                .build();
 
-        RequestBody requestBody = new MultipartBody.Builder().setType(MultipartBody.FORM)
-                .addFormDataPart("befEncoding", this.data)
-                .addFormDataPart("userId", Singleton.getInstance().getUserId())
-                .addFormDataPart("timeStamp", this.mDate)
-                .build();
+        if(mFiles == null) {
+            RequestBody requestBody = new MultipartBody.Builder().setType(MultipartBody.FORM)
+                    .addFormDataPart("userId", data)
+                    .addFormDataPart("userToken", "")
+                    .build();
+
+            OkHttpClient client = new OkHttpClient();
+            Request request = new Request.Builder().url(url).post(requestBody).build();
+            Response response = null;
+            try {
+                response = client.newCall(request).execute();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if (response != null)
+                Log.i("RES", response.toString());
+        } else {
+            RequestBody requestBody = new MultipartBody.Builder().setType(MultipartBody.FORM)
+                    .addFormDataPart("befEncoding", this.data)
+                    .addFormDataPart("userId", Singleton.getInstance().getUserId())
+                    .addFormDataPart("timeStamp", this.mDate)
+                    .build();
 
 
-        OkHttpClient client = new OkHttpClient();
-        Request request = new Request.Builder().url(url).post(requestBody).build();
-        Response response = null;
-        try {
-            response = client.newCall(request).execute();
-        } catch (IOException e) {
-            e.printStackTrace();
+            OkHttpClient client = new OkHttpClient();
+            Request request = new Request.Builder().url(url).post(requestBody).build();
+            Response response = null;
+            try {
+                response = client.newCall(request).execute();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if (response != null)
+                Log.i("RES", response.toString());
         }
-        if(response != null)
-            Log.i("RES",  response.toString());
         return "hello";
     }
 

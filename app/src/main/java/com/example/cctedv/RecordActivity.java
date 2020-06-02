@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -20,8 +21,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Base64;
 import java.util.Date;
 import java.util.TimeZone;
+
+import androidx.annotation.RequiresApi;
 
 public class RecordActivity extends Activity implements TextureView.SurfaceTextureListener {
     private Camera mCamera;
@@ -103,6 +107,7 @@ public class RecordActivity extends Activity implements TextureView.SurfaceTextu
 
         mCamera.setPreviewCallback(new Camera.PreviewCallback() {
 
+            @RequiresApi(api = Build.VERSION_CODES.O)
             public void onPreviewFrame(final byte[] data, final Camera camera) {
                 if(isCameraOpen) {
                     if(!accumulateFile(data)) {
@@ -128,11 +133,12 @@ public class RecordActivity extends Activity implements TextureView.SurfaceTextu
                                 fos.flush();
                                 fos.close();
 
-                                String byteData = new String(currentData);
-                                Log.i("this : ", byteData);
+//                                String byteData = new String(currentData);
+                                String s = Base64.getEncoder().encodeToString(currentData);
+//                                Log.i("this : ", byteData);
 
                                 // AsyncTask를 통해 HttpURLConnection 수행.
-                                (new NetworkTask(url, byteData, mFiles, mDate)).execute();
+                                (new NetworkTask(url, s, mFiles, mDate)).execute();
 
                             } catch (IOException e) {
                                 e.printStackTrace();

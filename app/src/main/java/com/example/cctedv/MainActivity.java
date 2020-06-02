@@ -7,6 +7,7 @@ import androidx.core.content.ContextCompat;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -48,6 +49,9 @@ public class MainActivity extends AppCompatActivity {
                 public void onClick(View view)
                 {
                     Singleton.getInstance().setUserId(mEdit.getText().toString());
+                    String url = "http://victoria.khunet.net:5900/user";
+                    final AsyncTask<Void, Void, String> execute = new NetworkTask(url, Singleton.getInstance().getUserId()).execute();
+
                     Log.v("UserId", Singleton.getInstance().getUserId());
                 }
             });
@@ -104,3 +108,4 @@ public class MainActivity extends AppCompatActivity {
     }
 
 }
+
