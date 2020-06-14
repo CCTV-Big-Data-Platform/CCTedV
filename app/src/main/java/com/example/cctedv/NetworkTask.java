@@ -1,14 +1,10 @@
 package com.example.cctedv;
 
-import android.content.ContentValues;
 import android.os.AsyncTask;
 import android.util.Log;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Date;
-
-import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -53,6 +49,7 @@ public class NetworkTask extends AsyncTask<Void, Void, String> {
             if (response != null)
                 Log.i("RES", response.toString());
         } else {
+            Log.i("DATA SIZE ", String.valueOf(this.data.length()));
             RequestBody requestBody = new MultipartBody.Builder().setType(MultipartBody.FORM)
                     .addFormDataPart("befEncoding", this.data)
                     .addFormDataPart("userId", Singleton.getInstance().getUserId())

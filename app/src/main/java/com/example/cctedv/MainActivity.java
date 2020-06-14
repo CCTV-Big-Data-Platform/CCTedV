@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         grantPermissions();
         Button   mButton;
+        Button imgActivity;
         final EditText mEdit;
 
         Button fab = findViewById(R.id.fab);
@@ -55,6 +56,15 @@ public class MainActivity extends AppCompatActivity {
                     Log.v("UserId", Singleton.getInstance().getUserId());
                 }
             });
+
+        imgActivity = (Button)findViewById(R.id.img_activity);
+        imgActivity.setOnClickListener(new View.OnClickListener()
+        {
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, SetUserImgActivity.class);
+                startActivity(intent);
+            }
+        });
 
     }
 

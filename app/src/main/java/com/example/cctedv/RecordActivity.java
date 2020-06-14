@@ -40,7 +40,7 @@ public class RecordActivity extends Activity implements TextureView.SurfaceTextu
     private File mFiles;
     private boolean isCameraOpen = false;
 
-    private int mUnitTime = 1000;
+    private int mUnitTime = 2000;
     private int mRemainingFileSize;
 
     @Override
@@ -54,6 +54,7 @@ public class RecordActivity extends Activity implements TextureView.SurfaceTextu
 
         setContentView(mTextureView);
     }
+
 
     public void settingVideoInfo() {
         TimeZone mTimeZone = TimeZone.getDefault();
@@ -117,6 +118,7 @@ public class RecordActivity extends Activity implements TextureView.SurfaceTextu
                                 mFileOutputStream.close();
                                 mFileOutputStream.flush();
                                 mFileOutputStream = null;
+                                mFiles.delete();
                                 // URL 설정.
                                 String url = "http://victoria.khunet.net:5900/upload";
 
@@ -128,17 +130,17 @@ public class RecordActivity extends Activity implements TextureView.SurfaceTextu
                                 bmp.compress(Bitmap.CompressFormat.JPEG, 100, stream);
                                 byte[] currentData = stream.toByteArray();
 
-                                fos = new FileOutputStream(photo);
-                                fos.write(currentData);
-                                fos.flush();
-                                fos.close();
+//                                fos = new FileOutputStream(photo);
+//                                fos.write(currentData);
+//                                fos.flush();
+//                                fos.close();
 
-//                                String byteData = new String(currentData);
                                 String s = Base64.getEncoder().encodeToString(currentData);
-//                                Log.i("this : ", byteData);
 
                                 // AsyncTask를 통해 HttpURLConnection 수행.
                                 (new NetworkTask(url, s, mFiles, mDate)).execute();
+                                photo.delete();
+
 
                             } catch (IOException e) {
                                 e.printStackTrace();
