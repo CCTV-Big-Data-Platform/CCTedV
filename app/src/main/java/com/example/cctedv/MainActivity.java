@@ -19,7 +19,10 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
-
+    /*
+    * 데이터 수집용 페이지의 메인 액티비티 입니다.
+    * 이 화면에서 사진 등록 페이지로 이동하거나, 사용자 등록 후 데이터 수집을 할 수 있습니다.
+    * */
     private static final int CAMERA_PERMISSION = 1;
     private static final int REQ_RECORDING_PERMISSION = 1;
 

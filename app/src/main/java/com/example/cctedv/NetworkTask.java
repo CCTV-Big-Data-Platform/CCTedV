@@ -12,7 +12,10 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class NetworkTask extends AsyncTask<Void, Void, String> {
-
+    /*
+     * 이 NetworkTask Class를 기반으로 http 통신을 이용하여 api를 호출 할 수 있습니다.
+     * 이 NetworkTask Class는 사용자 프레임데이터를 송신하거나, 사용자 아이디를 등록할 때 사용됩니다.
+     * */
     private String url;
     private String data;
     private File mFiles = null;

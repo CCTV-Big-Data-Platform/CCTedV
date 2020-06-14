@@ -42,6 +42,9 @@ public class RecordActivity extends Activity implements TextureView.SurfaceTextu
 
     private int mUnitTime = 2000;
     private int mRemainingFileSize;
+    /*
+     * 이 RecordActivity는 사용자별 데이터 프레임을 일정 unitTime별로 서버에 전송합니다.
+     * */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
