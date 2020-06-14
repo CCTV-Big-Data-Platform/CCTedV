@@ -7,18 +7,22 @@ import androidx.core.content.ContextCompat;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
-
+    /*
+    * 데이터 수집용 페이지의 메인 액티비티 입니다.
+    * 이 화면에서 사진 등록 페이지로 이동하거나, 사용자 등록 후 데이터 수집을 할 수 있습니다.
+    * */
     private static final int CAMERA_PERMISSION = 1;
     private static final int REQ_RECORDING_PERMISSION = 1;
 
@@ -27,6 +31,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         grantPermissions();
+        Button   mButton;
+        Button imgActivity;
+        final EditText mEdit;
 
         Button fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -34,6 +41,30 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Log.i("MainActivity","화면 전환");
                 Intent intent = new Intent(MainActivity.this, RecordActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        mEdit   = (EditText)findViewById(R.id.userId);
+        mButton = (Button)findViewById(R.id.enroll_user);
+        mButton.setOnClickListener(
+            new View.OnClickListener()
+            {
+                public void onClick(View view)
+                {
+                    Singleton.getInstance().setUserId(mEdit.getText().toString());
+                    String url = "http://victoria.khunet.net:5900/user";
+                    final AsyncTask<Void, Void, String> execute = new NetworkTask(url, Singleton.getInstance().getUserId()).execute();
+
+                    Log.v("UserId", Singleton.getInstance().getUserId());
+                }
+            });
+
+        imgActivity = (Button)findViewById(R.id.img_activity);
+        imgActivity.setOnClickListener(new View.OnClickListener()
+        {
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, SetUserImgActivity.class);
                 startActivity(intent);
             }
         });
@@ -90,3 +121,4 @@ public class MainActivity extends AppCompatActivity {
     }
 
 }
+

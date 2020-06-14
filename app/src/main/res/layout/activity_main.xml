@@ -6,21 +6,134 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <LinearLayout
+        android:id="@+id/rl"
+        android:layout_width="match_parent"
+        android:layout_height="560dp"
+        android:background="@drawable/pic_back"
+        android:orientation="vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:context=".MainActivity">
 
+        <LinearLayout
+            android:id="@+id/rl_up"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:orientation="vertical"
+            tools:context=".MainActivity">
+
+            <TextView
+                android:layout_width="315dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="45dp"
+                android:fontFamily="@res/font/nanumsquarer"
+                android:gravity="left"
+                android:text="User ID Setting"
+                android:textColor="#FFFFFF"
+                android:textSize="24dp"
+                />
+
+            <EditText
+                android:id="@+id/userId"
+                android:layout_width="315dp"
+                android:layout_height="56dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="45dp"
+                android:backgroundTint = "#FFFFFF"/>
+
+            <Button
+                android:id="@+id/enroll_user"
+                android:layout_width="315dp"
+                android:layout_height="56dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="45dp"
+                android:background="@drawable/btn_enroll" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/rl_down"
+            android:layout_width="match_parent"
+            android:layout_height="260dp"
+            android:orientation="vertical"
+            tools:context=".MainActivity">
+
+            <TextView
+                android:layout_width="315dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                android:fontFamily="@res/font/nanumsquarer"
+                android:gravity="center"
+                android:text="Recording"
+                android:textColor="#FFFFFF"
+                android:textSize="30dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="bottom"
+                android:paddingTop="10dp"
+                android:layout_marginTop="23dp"
+                android:orientation="horizontal">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+                </androidx.constraintlayout.widget.ConstraintLayout>
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:gravity="center"
+                    android:orientation="vertical">
+                    <Button
+                        android:id="@+id/fab"
+                        android:layout_width="137dp"
+                        android:layout_height="137dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/btn_cam"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        tools:layout_editor_absoluteY="0dp" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <Button
+                        android:id="@+id/img_activity"
+                        android:layout_width="58dp"
+                        android:layout_height="58dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/btn_plus"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:layout_marginBottom="15dp"
+                        tools:layout_editor_absoluteY="92dp" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </LinearLayout>
+
+        </LinearLayout>
+    </LinearLayout>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/coordinatorLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <Button
-            android:id="@+id/fab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:backgroundTint="#F57F17"
-            app:fabSize="auto"
-            app:layout_anchor="@id/bottom_app_bar"
-            app:srcCompat="@drawable/ic_fiber_manual_record_white_24dp"
-            app:tint="@android:color/white" />
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
         <com.google.android.material.bottomappbar.BottomAppBar
             android:id="@+id/bottom_app_bar"
@@ -29,6 +142,6 @@
             android:layout_gravity="bottom"
             app:backgroundTint="#303F9F"
             app:fabAlignmentMode="center" />
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

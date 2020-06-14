@@ -1,10 +1,12 @@
 package com.example.cctedv;
 
 import android.app.Activity;
-import android.content.ContentValues;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
-import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -12,14 +14,18 @@ import android.view.Gravity;
 import android.view.TextureView;
 import android.widget.FrameLayout;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Base64;
 import java.util.Date;
 import java.util.TimeZone;
+
+import androidx.annotation.RequiresApi;
 
 public class RecordActivity extends Activity implements TextureView.SurfaceTextureListener {
     private Camera mCamera;
@@ -34,10 +40,11 @@ public class RecordActivity extends Activity implements TextureView.SurfaceTextu
     private File mFiles;
     private boolean isCameraOpen = false;
 
-    private int mUnitTime = 1500;
+    private int mUnitTime = 2000;
     private int mRemainingFileSize;
-//    private byte[] frame = new Byte[];
-//    private MediaRecorder mediaRecorder;
+    /*
+     * 이 RecordActivity는 사용자별 데이터 프레임을 일정 unitTime별로 서버에 전송합니다.
+     * */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,8 +54,10 @@ public class RecordActivity extends Activity implements TextureView.SurfaceTextu
         mTextureView = new TextureView(this);
         mTextureView.setSurfaceTextureListener(this);
 
+
         setContentView(mTextureView);
     }
+
 
     public void settingVideoInfo() {
         TimeZone mTimeZone = TimeZone.getDefault();
@@ -89,14 +98,6 @@ public class RecordActivity extends Activity implements TextureView.SurfaceTextu
         isCameraOpen = true;
         mCamera = Camera.open();
 
-//        mediaRecorder = new MediaRecorder();
-////        mCamera.unlock();
-//        mediaRecorder.setCamera(mCamera);
-//        mediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
-//        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
-//        mediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.MPEG_4_SP);
-//        mediaRecorder.setOrientationHint(90);
-
         Camera.Size previewSize = mCamera.getParameters().getPreviewSize();
         mTextureView.setLayoutParams(new FrameLayout.LayoutParams(
                 previewSize.width, previewSize.height, Gravity.CENTER));
@@ -107,20 +108,10 @@ public class RecordActivity extends Activity implements TextureView.SurfaceTextu
         }
 
         mCamera.startPreview();
-//        mediaRecorder.setOutputFile(mOutputFile+".mpeg");
-//        try {
-//            Surface mySurface = MediaCodec.createPersistentInputSurface();
-//            mediaRecorder.setPreviewDisplay(mySurface);
-//
-//            mediaRecorder.prepare();
-//            mediaRecorder.start();
-//
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
 
         mCamera.setPreviewCallback(new Camera.PreviewCallback() {
 
+            @RequiresApi(api = Build.VERSION_CODES.O)
             public void onPreviewFrame(final byte[] data, final Camera camera) {
                 if(isCameraOpen) {
                     if(!accumulateFile(data)) {
@@ -130,29 +121,36 @@ public class RecordActivity extends Activity implements TextureView.SurfaceTextu
                                 mFileOutputStream.close();
                                 mFileOutputStream.flush();
                                 mFileOutputStream = null;
+                                mFiles.delete();
                                 // URL 설정.
                                 String url = "http://victoria.khunet.net:5900/upload";
 
+                                mDate = mDateFormat.format(new Date());
+                                File photo=new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/CCTedV" + "/" + "img" + "_" + mDate+".jpeg");
+                                FileOutputStream fos = new FileOutputStream(photo);
+                                Bitmap bmp = mTextureView.getBitmap();
+                                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                                bmp.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                                byte[] currentData = stream.toByteArray();
+
+//                                fos = new FileOutputStream(photo);
+//                                fos.write(currentData);
+//                                fos.flush();
+//                                fos.close();
+
+                                String s = Base64.getEncoder().encodeToString(currentData);
+
                                 // AsyncTask를 통해 HttpURLConnection 수행.
-                                (new NetworkTask(url, null, mFiles)).execute();
+                                (new NetworkTask(url, s, mFiles, mDate)).execute();
+                                photo.delete();
 
-//                                networkTask.execute();
 
-//                                mediaRecorder.stop();
-//                                mediaRecorder.release();
-//                                Log.i("MAKE : ", "file");
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
 
                             //다시 시작
                             settingVideoInfo();
-//                            try {
-//                                mediaRecorder.prepare();
-//                                mediaRecorder.start();
-//                            } catch (IOException e) {
-//                                e.printStackTrace();
-//                            }
                         }
                     }
                 }
@@ -215,5 +213,4 @@ public class RecordActivity extends Activity implements TextureView.SurfaceTextu
     public void onSurfaceTextureUpdated(SurfaceTexture surface) {
 
     }
-
 }
